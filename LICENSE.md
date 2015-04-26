@@ -1,4 +1,4 @@
- Scripting Free Software License, Version 1.6 (S-FSL v1.6) as provided by elstel.org/license
+ Scripting Free Software License, Version 1.6 (S-FSL v1.6) as provided by [elstel.org/license](http://www.elstel.org/license/)
 
 1. This program may be used free of charge. It has been designed as research work and comes without claim for fitness to any particular usage purpose and completely without warranty or any kind of liability such as lost revenues, profits, harm or damage of any kind.
 
