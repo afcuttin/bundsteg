@@ -1,15 +1,84 @@
 #!/bin/bash
 #
-#  bundsteg v1.1 - print pdfs with gutter/gap/inner margin
-#  (c) copyright by Elmar Stellnberger 2009-08-05: v1.0, 2015-04-13: v1.1
+#  bundsteg v1.2 - print pdfs with gutter/gap/inner margin
+#  (c) copyright by Elmar Stellnberger 2009-08-05: v1.0, 2015-04-13..19: v1.2
 #
 
+license() {
+  echo -e "\e[1mThis program may be used under the terms of S-FSL v1.6, with free branching:\e[0m"; echo
+  cat <<EOQ
+ Scripting Free Software License, Version 1.6 (S-FSL v1.6) as provided by elstel.org/license
 
-pize() { while read tok; do echo "P$tok"; done; }
+1. This program may be used free of charge. It has been designed as research work and comes without claim for fitness to any particular usage purpose and completely without warranty or any kind of liability such as lost revenues, profits, harm or damage of any kind.
+
+2. The program may be distributed by a third party given that the program is distributed in its original state completely without any kind of modifications or patches. If you need to re-distribute a patched of this program you need to distribute the patches separately from the original so that the pristine version can be restored at any time. Note that the distribution of a derivative plus reverse applicable patches will be deemed equivalent to the distribution of a pristine version plus forward applicable patches. No patches that could be shipped use to exist for automatic derivation processes like f.i. the compilation of sources. By applying automatic derivations you consent that you will provide all makefiles or any other additional input which is required for the derivation process to the original authors under the same licensing and same terms as patches. An OSS-tool to achieve these derivations must be available for free to the public. It needs to yield functionally equivalent results as the binaries you distribute and work with the input files you have shipped. We suggest you to ship binaries and sources in different packages.
+
+3. Modifications applied to this program may not affect the name, original version, copyright, license or any reference given to the authors such as their email addresses or their web presence and/or page in any part of the program or any files attached to the program apart from updates to these references made by the respective authors themselves. You as a distributor need to let your contributors add their names, their email and modifications with date to the changelog. You may use the upstream changelog if present or your own one as long as it stays accessible upstreams. Any derived work must carry the name of the distributor, vendor or the product in its name (or a unique shorthand for it) directly preceded by the original unchanged final upstream name of the software and its version at the beginning. For automatic derivations a tag concerning the derivation process or its output like f.i. the machine architecture would be appropriate. You must not charge for the programs under S-FSL themselves but you may require a reasonable charge for the physical reproduction of the data.
+
+4. You may only extend or modify this program given that you do also consent with the following terms. As far as you are not a public distributor you are obliged to send a copy of your patches to the original authors referred to herein as the authors of the first version of the program as being listed in the changelog or program header whenever you publish or exchange your patches with other people. If you have some work in progress you are obliged to send out bundled patches once at least every month. This is to assert the availability and recognition of patches at least by the original authors or branch maintainers; a condition which must be held even if you agree not to actively 'send' or 'forward' your patches. For bundled patches you do not need to ship intermediate patches or dead end patches provided that the final derived work can be restored by applying all distributed patches to the original in an order indicated by the patch providers. Something is considered a dead end patch if it leads to a broken program, the result is not usable and you do not plan to continue to work on it. The original authors will finally have to resolve whether to incorporate your patches or not into future versions. Any contributor has the right to be listed with full name, patching date and email address in the changelog of this program.
+
+5. By distributing patches you do also consent that the original authors may incorporate your patches into future versions of this program. The patched parts of the program and the patches themselves will also become subject to this licensing and may even be used for free in other programs or in the same program under different licensing as soon as you choose to publish any kind of patch; i.e. you need to be ready to share your full intellectual property rights with the original authors whenever you choose to exchange, distribute or publish any kind of patch to this program. Sharing your intellectual property means that both parties - you and the original authors - obtain the full set of rights about your modifications which were initially only associated with you. The propagation of rights extends up to usage rights for patents used in derived works including the transferability of usage rights to child and parent branches; it does however not extend up to trademarks. Trademarks used in derived works may only be used by the original authors to describe the origin of newly incorporated features if they wish to do so.
+
+6. If you want to develop a separate branch of this program the original authors need to consent as long as the software may be subject to further development by them; if not that should be indicated by them denominating either new copyright holders with the same right as the original authors or by publishing under a different license. If S-FSL 'with free branching' is explicitly specified in the license terms then you may choose to develop a different branch of this program any time you want given that your new branch serves a new purpose or is sufficiently different so that the original authors do choose not to re-integrate your branch at least for two patching periods. Separate branches have another base name and their own versioning scheme. A new branch will work under the same license and have the same rights as the original concerning the incorporation and management of patches giving the original issuers of the branch equivalent rights as the original authors for the scope of their branch. Branched versions do however need to forward and share patches including all associated property rights with their parent branch. Branched versions can not re-publish under a different license or use patches, patents or other intellectual property of the maintainers of the parent branch in a new context unless explicit consent from the maintainers of the parent branch is given. Hence the propagation of rights as described in the previous paragraph does automatically work in upstream direction only. The maintainers of the original product or any of its branches may any time transfer their rights to a new or extended group of people. The new copyright holders can thereupon act as the original authors or issuers of the branch called branch maintainers. If no provisions have been taken in case of decease of the original authors the group of people who has contributed the most to the main branch measured in the total sum of lines of code at this time will be allowed to continue using the original name of the software as a new branch while any other group will still be free to branch.
+
+7. The term distribution describes shipping an aggregate of software, its documentation and adherent materials. Any distribution which wants to assimilate software under S-FSL needs to take the following minimal provisions: It must be possible to verify the download of a whole image as far as provided securely by a publicly available tool and a checksum which is exposed to the broad public. Additional keys may be provided in any kind of way. Secure checksums must be provided for every file shipped within the packages of the distribution as long as the file is not generated automatically on installation of the package. These checksums can either be provided externally or in the package header. If the package is upgraded the checksums for the old version must still be kept available. Security updates and updates against broken functionality must also be available to the public rather than just to a paying customer stock as long as they pertain to software that can either be downloaded or compiled from sources by the public and which pertain to the distribution. Note that updates do not include upgrades to future upstream versions of a program. Available to the public implies here available free of charge apart from connectivity to the internet or a reasonable charge for the reproduction of the data medium and does also pertain to the terms 'public distribution' and 'public distributor'.
+
+8. Public distributions have the advantage of not having to ship patches proactively to the original authors or copyright holders. This does not prevent the same software including its adherent materials to be additionally available at cost or privately somewhere else as long as public availability remains guaranteed at a reasonable level (f.i. download of the free parts of the distribution within some days.). A public distribution may any time also ship with adherent materials at cost such as documentation, support or additional software as long as it remains available to the public free of charge also without these adherent materials. However there must not be any undue hindrance in obtaining the distribution requiring special knowledge not known by users technically experienced in the field of the public software shipped with the distribution and the software it depends on.
+
+9. Software under S-FSL that should either be used as or in a component, plug-in or add-on of 'non public' or so called 'additional' software or whenever software under S-FSL is required to run such 'non public' or 'additional' software then S-FSL imposes the restriction that the additional or non public software must also either be made available under S-FSL of at least the same version or under an OSS-compliant license as well as free of charge to the public or that you will need to pay for the software under S-FSL being incorporated. A license is to be deemed OSS-compliant if it has been accepted by opensource.org. The original authors or any extended set of authors maintaining the main branch may sign an agreement to dispense these revenues by an association, company or simply by a predefined share. As long as no such agreement should exist all original authors have the right to obtain an equal share of revenue. Any new branch will be granted the right to generate revenue independetly from the parent branch as long as no agreement with different arrangements should have been signed at the time when founding the branch.
+
+10. This license is governed by the Laws of the country of the original author mentioned first and disputes shall be settled by his nearest place of residence. If any of the terms stated in this license were not in accordance with local law all other parts of this license should remain valid.
+
+EOQ
+  exit 0;
+}
+
+rot=$'\e[1;31m'; blau=$'\e[1;34m'; nv=$'\e[0m'; ul=$'\e[4m';
+err() { echo -e "${rot}$@${nv}" >&2; }
+warn() { echo -e "${rot}$@${nv}" >&2; }
+msg() { echo -e "${blau}$@${nv}" >&2; }
+
+rotate=('' 'R' 'D' 'L'); modulos=""; let should_rotate=0;
+
+pize() { local tvar tok base T mo m rem op
+  if [[ should_rotate -eq 0 ]]; then
+    while read tok; do echo "P$tok"; done;
+  else
+    while read tok; do
+      tvar=t$tok; let base=${!tvar:-0};
+      for mo in $modulos; do read m rem op <<<"${mo//:/ }"; [[ tok%m -eq rem ]] && let base+=op; done
+      T=${rotate[base%4]}
+      echo "P$tok$T";
+    done;
+  fi
+}
+
+addop() { local op i left right
+  case "$1" in
+    r|R) let op=1;; l|L) let op=3;; d|D) let op=2;; *) err "unknown operation $1.";exit 5;;
+  esac
+  let should_rotate=1;
+  for i in ${2//,/ }; do
+    left="${i%%-*}" right="${i#*-}"; let modulo=0 remainder=0;
+    if [[ "$right" =~ \~ ]]; then modulo=${right#*~}; right=${right%%~*}; fi
+    if [[ "$modulo" =~ : ]]; then remainder=${modulo#*:}; modulo=${modulo%%:*}; fi
+    if [[ -z "$right" && modulo -ge 1 && ( -z "$left" || "$left" = "~$modulo" || "$left" = "~$modulo:$remainder" ) ]]; then
+      modulos="$modulos $modulo:$remainder:$op";
+    elif [[ left -eq 0 || right -eq 0 ]]; then
+      err "not a page number: $left, $right."; exit 2;
+    elif [[ left -eq right &&  modulo -le 1 ]]; then
+      let t${left}+=op;
+    else
+      [[ modulo -le 1 ]] && let modulo=1; let remainder=remainder%modulo;
+      for((i=left;i<=right;i++)); do [[ i%modulo -eq remainder ]] && let t${i}+=op; done
+    fi
+  done
+}
+
 calc() {
   while [ -n "$1" ]; do
     var="${1%%=*}"; term="${1#*=}"
-    term="$(sed 's#[A-Za-z][A-Za-z0-9]*#$&#g' <<<"$term")"
+    term="$(sed 's#[A-Za-z][A-Za-z0-9]*#$&#g;s#(#\\(#g;s#)#\\)#g' <<<"$term")"
     eval "term=$term"
     export $var=$(bc <<<"scale=8;$term");
     shift
@@ -19,9 +88,9 @@ calc() {
 round() {
   while [ -n "$1" ]; do
     var="${1%%=*}"; term="${1#*=}"
-    term="$(sed 's#[A-Za-z][A-Za-z0-9]*#$&#g' <<<"$term")"
-    eval "term=$term"
-    export $var=$(bc <<<"scale=0;$term");
+    term="$(sed 's#[A-Za-z][A-Za-z0-9]*#$&#g;s#(#\\(#g;s#)#\\)#g' <<<"$term")"
+    eval "term=$term";
+    export $var=$(awk "BEGIN { printf(\"%.0f\",$term); }");
     shift
   done
 }
@@ -33,24 +102,106 @@ interleave() {
   [[ rem -gt 0 ]] && echo "O$((both+1))"
 }
 
+pdf_first_page_size() {
+  pdfinfo "$1" | sed -n 's#Page size:[ \t]*\([0-9]*\)[ \t]*x\?[ \t]*\([0-9]*\).*#\2 \1 #p'
+}
+
+let num_slurp=3;
+
+pdf_page_size_awk() { local i
+  let count=100; # [[ -z "$count" ]] && { err "\$count not set;"; exit 1; }
+  { for((i=1;i<=num_slurp;i++)); do
+    [[ i -gt count ]] && break; pdfinfo -f $i -box "$1";
+  done; echo; } | awk 'BEGIN { maxx=0; maxy=0; } /^MediaBox:/{ maxx=max(maxx,$5-$3); maxy=max(maxy,$4-$2); } END { print maxx, maxy; } function max(a,b) { if(a>=b) return a; return b; }'
+  #pdfinfo -box "$1"  | sed -n 's#MediaBox:[ \t]*[0-9]*[ \t]*[0-9]*[ \t]*\([0-9]*\)[ \t]*\([0-9]*\).*#\1 \2 #p' - or better right-left?
+}
+
+pdf_page_size() {
+  gs -dNODISPLAY -dQUIET -SFile="$1" - <<EOQ
+File (r) file runpdfbegin
+
+% considers MediaBox of all pages
+
+0 0 1 1 pdfpagecount
+{
+  pdfgetpage /MediaBox pget {
+    %oforce_array ==only
+    % (\n) print
+    aload pop         % left bottom right top
+    exch 3 1 roll sub neg 3 1 roll sub neg  % top-bottom left-right (maxy, maxx, Δy, Δx)
+    %=print ( ) print =print (\n) print
+    3 2 roll max        % max, Δy, new_maxx
+    3 1 roll max        % new_maxx, new_maxy
+    exch
+  } if
+} for
+
+=print ( ) print =print (\n) print
+% duplicate value of last page once more
+
+runpdfend
+quit
+EOQ
+}
+
+pdf_every_height() {
+  gs -dNODISPLAY -dQUIET -SFile="$1" - <<EOQ
+File (r) file runpdfbegin
+
+1 1 pdfpagecount
+{
+  pdfgetpage /MediaBox pget {
+    aload pop =print pop pop pop
+    ( ) print
+  } if
+} for
+
+% duplicate value of last page once more
+pdfpagecount pdfgetpage /MediaBox pget { aload pop =print pop pop pop } if
+
+runpdfend
+quit
+EOQ
+}
+
 do_pdfcrop() { {
   pdfcrop "$@" 2>&1 1>&3 | sed -n "s#.*Error: Cannot move \`\([^']*\)['] to \`\([^']*\)['].*#move\n\1\n\2#p" | {
     read command; if [ "$command" = "move" ]; then
       read movefrom; read moveto; mv "$movefrom" "$moveto";
       echo mv "$movefrom" "$moveto";
-    else echo "$command" >&2; fi
+    else
+      [[ -n "$command" ]] && echo "$command" >&2;
+    fi
   }
-} 3>&2; }
+} 3>&1 | {
+  if [[ verbosity -le 1 ]]; then egrep -v "PDFCROP.*Copyright| pages written on |^[ \t]*$"
+  elif [[ verbosity -le 3 ]]; then grep -v "PDFCROP.*Copyright"
+  else cat;
+  fi
+}; }
 
 help() {
   cat <<EOQ
-$(basename $0) --horiz bs[,bs2] input.pdf [output.pdf]
-$(basename $0) --vert bs[,bs2] input.pdf [output.pdf]
-  bs: size of gutter in mm; use f.i. 10 or 15
+$(basename $0) [opts] --horiz bs[,bs2] input.pdf [output.pdf]
+$(basename $0) [opts] --vert bs[,bs2] input.pdf [output.pdf]
+  bs: size of gutter in mm (or the unit specified by --mm/--inch/--zoll); use f.i. 10 or 15
   you may specify a different gutter size for even pages (bs2) separated by a colon from the one for odd pages
   default output file: input.bundsteg.pdf
+[opts]: -v/--verbose/-vv: be more verbose, -q/--quiet: be quiet
+        --a4 (default) / --a4+ / --letter / --legal
+  --mm (default) / --inch = --zoll
+  --rl/rr/rd ~1 / 2,3-4 ... rotate all pages / pages 2,3-4 left, right or double (twice)
+  --rr 7-18~3:1 ... rotate pages between 7 and 18 with modulo 3 = 1
+  --nup 2x1 ..... fold 2x1 input pages onto one output page
+  --frame ..... draw a frame around each page, --align-bottom / --align-top
+  --margin 4.2[,4.2[,4.2[,4.2]]] ... specify minimum margins (left,top,right,bottom)
+  --[no-]nup-crop ... crop margins before nup; default is currently off because of an
+                      incompatibilty between pdfnup and pdfcrop.
+
+see also: $(basename $0) --license / --help
 
 EOQ
+  # for compatibility from older versions: --slurp 7 .... consider first seven pages for margin calculation (default: only three)
 }
 
 checkfound() {
@@ -59,8 +210,64 @@ checkfound() {
   notfound=true;
 }
 
+checkfound_gs() {
+  while [[ $# -ge 1 ]]; do
+    gs="$(which "$1")"; [[ -n "$gs" ]] && [ -x "$gs" ] && return
+    shift
+  done
+  echo "could not find the ghostscript."
+  notfound=true
+}
 
-if [ $# -ne 3 -a $# -ne 4 ]; then help; else
+setmargins() {
+  set -- ${1//,/ } $2 $3 $4
+  if [[ -z "$1" ]]; then calc 'li=4.2*72/25.4'; else calc "li=$1*unit"; fi
+  shift;
+  if [[ -z "$1" ]]; then ob=$li; else calc "ob=$1*unit"; fi
+  shift;
+  if [[ -z "$1" ]]; then re=$li; else calc "re=$1*unit"; fi
+  shift;
+  if [[ -z "$1" ]]; then un=$ob; else calc "un=$1*unit"; fi
+}
+
+if [[ "$1" = "--license" ]]; then license; fi
+
+let verbosity=1; nup=""; frame=false; align='top';
+calc 'unit=72/25.4'; let nupcrop=-1;
+calc 'li=4.2*72/25.4' 're=li' 'ob=li' 'un=ob'
+calc 'breite=210*72/25.4' 'laenge=297*72/25.4'
+#calc 'li=0' 're=li' 'ob=0' 'un=ob'
+
+while [[ "${1:0:1}" = "-" ]]; do
+  if [[ "${1:0:2}" != "--" ]]; then
+    for((i=1;i<${#1};i++)); do
+      case "${1:i:1}" in
+  v) let verbosity++;; q) let verbosity--;;
+  *) err "unknown short option -${1:i:1}."; exit 2;
+      esac;
+    done
+  else
+    case "$1" in
+      --license) license;; --help) help; exit 0;;
+      --verbose) let verbosity++;; --quiet) let verbosity--;;
+      --mm) calc 'unit=72/25.4';; --inch|--zoll) unit="72";;
+      --a4) calc 'breite=210*72/25.4' 'laenge=297*72/25.4';; --a4+) calc 'breite=215.9*72/25.4' 'laenge=330.2*72/25.4';;
+      --letter) calc 'breite=8.5*72' 'laenge=11*72';; --legal) calc 'breite=8.5*72' 'laenge=14*72';;
+      --rr) addop R "$2"; shift;; --rl) addop L "$2"; shift;; --rd) addop D "$2"; shift;;
+      --nup) nup="$2"; shift;; --slurp) let num_slurp=$2; shift;; --frame) frame=true;;
+      --bottom-align|--align-bottom) align='bottom';; --top-align|--align-top) align='top';;
+      --margin) setmargins "$2"; shift;; --nupcrop) let nupcrop=1;; --no-nupcrop) let nupcrop=0;;
+      --horiz|--vert|--landscape|--no-landscape) break;;
+      *) err "unknown long option $1."; exit 2;;
+    esac;
+  fi
+  shift;
+done
+
+if [[ verbosity -le 1 ]]; then dofork=1; else dofork=0; fi
+[[ nupcrop -lt 0 ]] && [[ -n "$nup" ]] && let nupcrop=0; # if [[ "$frame" = "true" ]]; then let nupcrop=1; else let nupcrop=0; fi
+
+if [[ $# -ne 3 && $# -ne 4 ]]; then help; else
   input="$3"
   if [[ $# -eq 4 ]]; then output="$4"; else output="${input%.pdf}.bundsteg.pdf"; fi
 
@@ -68,51 +275,194 @@ if [ $# -ne 3 -a $# -ne 4 ]; then help; else
   #pdftools="wine /usr/local/advanced_pdf_tools_cmd_v3.0/pdftools.exe"
   #checkfound ${pdftools#* } http://www.verypdf.com/pdfinfoeditor/
   checkfound $(which pdfcrop) texlive-extra-utils
-  #checkfound $(which pdftools) texlive-context
+  checkfound $(which pdfinfo) poppler-utils
   checkfound $(which pdftk) pdftk
+  [[ -n "$nup" ]] && checkfound $(which pdfjam) texlive-extra-utils
+  checkfound_gs gs gsos2 gswin64c gswin64 gswin32c gswin32
   $notfound && exit 1
 
-  [[ $2 -gt 0 ]] || { echo "no valid value for bs (use 10 or 15 at 2nd param)";echo; exit 2; }
-  bs1=${2%%,*}; bs2=${2#*,}; calc 'bs1=bs1*72/25.4' 'bs2=bs2*72/25.4'
-  #calc 'li=0.333*72' 're=li' 'ob=0.5*72' 'un=ob'
-  calc 'li=4.3*72/25.4' 're=li' 'ob=li' 'un=ob'
-  round 'breite=210*72*72/25.4' 'laenge=297*72*72/25.4'
-  #calc 'li=0' 're=li' 'ob=0' 'un=ob'
+  bs1=${2%%,*}; bs2=${2#*,}; # [[ bs1 -ge 0 && bs2 -ge 0 ]] || { echo "no valid value for bs (use 10 or 15 at 2nd param)";echo; exit 2; }
+  calc 'bs1=bs1*unit' 'bs2=bs2*unit'
 
-  if [ "$1" == "--horiz" ]; then
+  if [[ "$1" = "--horiz" || "$1" = "--landscape" ]]; then
     calc 'li1=li' 'ob1=ob+bs1'   're2=re' 'un2=un+bs2'
     xext=$laenge; yext=$breite; # papersize="0 0 ${laenge%.*} ${breite%.*}"
-  elif [ "$1" == "--vert" ]; then
+    orientation="--landscape";
+    calc 'xextodd=xext-(li+re)' 'yextodd=yext-(ob1+un)'
+    calc 'xexteven=xext-(li+re)' 'yexteven=yext-(ob+un2)'
+  elif [[ "$1" = "--vert" || "$1" = "--no-landscape" ]]; then
     calc 'li1=li+bs1' 'ob1=ob'   're2=re+bs2' 'un2=un'
     xext=$breite; yext=$laenge; # papersize="0 0 ${breite%.*} ${laenge%.*}"
+    orientation="--no-landscape";
+    calc 'xextodd=xext-(li1+re)' 'yextodd=yext-(ob+un)'
+    calc 'xexteven=xext-(li+re2)' 'yexteven=yext-(ob+un)'
   else
-    echo "1st param: --horiz / --vert"; exit 3;
+    echo "final option param needs to be either --horiz or --vert."; exit 3;
   fi
+  [[ "$frame" = "true" && -z "$nup" ]] && nup="1x1"
+
+  #calc 'xextodd=xext-(li1+re)' 'yextodd=yext-(ob1+un)'
+  #calc 'xexteven=xext-(li+re2)' 'yexteven=yext-(ob+un2)'
+
+  [[ verbosity -ge 3 ]] && echo
+  [[ verbosity -ge 3 ]] && echo "xext=$xext yext=$yext"
+  [[ verbosity -ge 3 ]] && echo "xextodd=$xextodd ($li1 $ob1 $re $un) yextodd=$yextodd"
+  [[ verbosity -ge 3 ]] && echo "xexteven=$xexteven ($li $ob $re2 $un2) yexteven=$yexteven"
+
+  #echo "$xextodd $yextodd $li1 $ob1 $re $un"; exit 1;
 
   #pages=$(pdftools --countpages "$input")
   #pages=$(pdftools --info "$input" | sed -n 's#.*<pages>\([0-9]*\)</pages>*#\1#p')
   pages=$(pdftk "$input" dump_data | sed -n 's#^NumberOfPages:[ \t]*\([0-9]*\)#\1#p')
-  unset pdf4even pdf4odd bs4even bs4odd
-  trap 'rm -f $pdf4even $pdf4odd $mg4even $mg4odd $bs4even $bs4odd' EXIT;
+  unset pdf2rot crop4nup pdf2nup; trap 'rm -f $pdf2rot $crop4nup pdf2nup' EXIT;
+  if [[ -n "$nup" ]]; then
+    if [[ should_rotate -ne 0 ]]; then
+      pdf2rot="$(mktemp --suffix _rotate.pdf;)";
+      if [[ verbosity -ge 2 ]]; then echo $'\n'"rotating pages: pdftk P='$input' cat $(seq 1 1 $pages | pize | tr '\n' ' ';) output $pdf2rot";
+      elif [[ verbosity -ge 1 ]]; then echo "rotating pages with pdftk.";
+      fi
+      pdftk P="$input" cat $(seq 1 1 $pages | pize;) output $pdf2rot
+      input=$pdf2rot; let should_rotate=0;
+      [[ verbosity -ge 2 ]] && echo
+    fi
+    if [[ nupcrop -ne 0 ]]; then
+      crop4nup="$(mktemp --suffix _crop4nup.pdf;)";
+      [[ verbosity -ge 1 ]] && echo "pdfcrop before nup.";
+      do_pdfcrop --margins "0 0 0 0" $input $crop4nup;
+      input=$crop4nup;
+      [[ verbosity -ge 2 ]] && echo
+    fi
+    pdf2nup="$(mktemp --suffix _nup.pdf;)";
+    [[ verbosity -ge 1 ]] && echo "pdfjam/pdfnup --nup $nup $orientation --frame $frame --outfile $pdf2nup '$input'";
+    if [[ verbosity -ge 3 ]]; then bequiet=""; else bequiet="--quiet"; fi
+    pdfjam $bequiet --nup "$nup" $orientation --frame $frame --outfile $pdf2nup "$input"
+    input=$pdf2nup
+    [[ -n "$pdf2rot" ]] && { rm -f $pdf2rot; unset pdf2rot; }
+    [[ -n "$crop4nup" ]] && { rm -f $crop4nup; unset crop4nup; }
+    pages=$(pdftk "$input" dump_data | sed -n 's#^NumberOfPages:[ \t]*\([0-9]*\)#\1#p')
+    [[ verbosity -ge 2 ]] && echo
+  fi
+  unset pdf4even pdf4odd mg4even mg4odd sc4even sc4odd bs4even bs4odd
+  trap 'rm -f $pdf2nup $pdf4even $pdf4odd $mg4even $mg4odd $sc4even $sc4odd $bs4even $bs4odd' EXIT;
 
+  [[ verbosity -ge 2 ]] && echo 'splitting odd and even pages.';
   pdf4even=$(mktemp --suffix _even.pdf); pdf4odd=$(mktemp --suffix _odd.pdf)
+  [[ verbosity -ge 2 ]] && { echo "odd: $(seq 1 2 $pages | pize | tr '\n' ' ';)"; echo "even: $(seq 2 2 $pages | pize | tr '\n' ' ';)"; }
   pdftk P="$input" cat $(seq 1 2 $pages | pize;) output $pdf4odd
   pdftk P="$input" cat $(seq 2 2 $pages | pize;) output $pdf4even
+  [[ -n "$pdf2nup" ]] && { rm -f $pdf2nup; unset pdf2nup; }
 
-  mg4even=$(mktemp --suffix _even-mg.pdf); mg4odd=$(mktemp --suffix _odd-mg.pdf)
-  bs4even=$(mktemp --suffix _even-bs.pdf); bs4odd=$(mktemp --suffix _odd-bs.pdf)
-  echo $'\n' pdfcrop --margins \"$li1 $ob1 $re $un\" $pdf4odd $bs4odd
-  do_pdfcrop --margins "$li1 $ob1 $re $un" $pdf4odd $mg4odd; rm -f $pdf4odd
-  gs -sDEVICE=pdfwrite -dPDFFitPage -g${xext}x${yext} -dBATCH -dQUIET -dNOPAUSE -sOutputFile=$bs4odd $mg4odd
+  mg4odd=$(mktemp --suffix _odd-mg.pdf); mg4even=$(mktemp --suffix _even-mg.pdf)
+  bs4odd=$(mktemp --suffix _odd-bs.pdf); bs4even=$(mktemp --suffix _even-bs.pdf);
 
-  echo $'\n' pdfcrop --margins \"$li $ob $re2 $un2\" $pdf4even $bs4even
-  do_pdfcrop --margins "$li $ob $re2 $un2"  $pdf4even $mg4even; rm -f $pdf4even
-  gs -sDEVICE=pdfwrite -dPDFFitPage -g${xext}x${yext} -dBATCH -dQUIET -dNOPAUSE -sOutputFile=$bs4even $mg4even
+oddpages() {
+  [[ verbosity -ge 3 ]] && echo $'---------------------------------------------------------------------------\n'
+  [[ verbosity -ge 3 ]] && pdfinfo $pdf4odd
 
-  echo $'\n' pdftk E=$bs4even O=$bs4odd cat $(interleave) output "$output"
-  pdftk E=$bs4even O=$bs4odd cat $(interleave) output "$output"
+  [[ verbosity -ge 2 ]] && echo
+  [[ verbosity -ge 1 ]] && echo " odd pages: removing margins <$pdf4odd >$mg4odd"
+  do_pdfcrop --margins "0 0 0 0" $pdf4odd $mg4odd; rm -f $pdf4odd
+  read xcropodd ycropodd < <( pdf_page_size $mg4odd; );
+  [[ verbosity -ge 3 ]] && echo "$xcropodd x $ycropodd"
+  [[ verbosity -ge 3 ]] && pdfinfo $mg4odd
+
+  read -d '\n' scaleodd addxodd addyodd liodd unodd obodd < <( bc <<EOQ
+scale=8;
+define min(x,y) { if(x<=y) return x; return y; }
+  s = min( $xextodd / $xcropodd, $yextodd / $ycropodd );
+  s
+  addx = 0.5 * ( $xextodd - $xcropodd * s ) + 0.5
+  addx
+  addy = 0.5 * ( $yextodd - $ycropodd * s ) + 0.5
+  addy
+  $li1 + addx
+  $un + addy
+  $ob1 + addy
+
+EOQ
+);
+  [[ verbosity -ge 3 ]] && echo "scalodd=$scaleodd addxodd=$addxodd addyodd=$addyodd liodd=$liodd unodd=$unodd obodd=$obodd";
+
+  [[ verbosity -ge 2 ]] && echo
+  [[ verbosity -ge 1 ]] && echo " odd pages: re-adding margins <$mg4odd >$bs4odd"
+  # unused option: -dFitPage may not allow the exact devwidth & devheight given but rather preserve the aspect ratio
+  if [[ "$align" = "top" ]]; then
+    pageheightsodd="$(pdf_every_height $mg4odd)";
+    [[ verbosity -ge 3 ]] && { echo "page heights (+dup last): $pageheightsodd"; }
+    $gs -sDEVICE=pdfwrite -dFIXEDMEDIA -dDEVICEWIDTHPOINTS=${xext} -dDEVICEHEIGHTPOINTS=${yext} -dBATCH -dQUIET -dNOPAUSE -sOutputFile=$bs4odd -c "<< /Install { $liodd currentpagedevice /PageSize get aload pop exch pop [$pageheightsodd] currentpagedevice /PageCount get get $scaleodd mul sub $obodd sub translate $scaleodd $scaleodd scale } bind >> setpagedevice" -f $mg4odd
+  else
+    $gs -sDEVICE=pdfwrite -dFIXEDMEDIA -dDEVICEWIDTHPOINTS=${xext} -dDEVICEHEIGHTPOINTS=${yext} -dBATCH -dQUIET -dNOPAUSE -sOutputFile=$bs4odd -c "<< /Install { $liodd $unodd translate $scaleodd $scaleodd scale } bind >> setpagedevice" -f $mg4odd
+  fi
+  rm -f $mg4odd
+  #do_pdfcrop --bbox "0 0 $xextodd $yextodd" --margins "$li1 $ob1 $re $un" $sc4odd $bs4odd; rm -f $sc4odd
+  [[ verbosity -ge 3 ]] && pdfinfo $bs4odd
+}
+
+evenpages() {
+  [[ verbosity -ge 3 ]] && echo $'\n---------------------------------------------------------------------------\n'
+  [[ verbosity -ge 3 ]] && pdfinfo $pdf4even
+
+  [[ verbosity -ge 2 ]] && echo
+  [[ verbosity -ge 1 ]] && echo " even pages: removing margins <$pdf4even >$mg4even"
+  do_pdfcrop --margins "0 0 0 0" $pdf4even $mg4even; rm -f $pdf4even
+  read xcropeven ycropeven < <( pdf_page_size $mg4even; );
+  [[ verbosity -ge 3 ]] && echo "$xcropeven x $ycropeven"
+  [[ verbosity -ge 3 ]] && pdfinfo $mg4even
+
+  read -d '\n' scaleeven addxeven addyeven lieven uneven obeven < <( bc <<EOQ
+scale=8;
+define min(x,y) { if(x<=y) return x; return y; }
+  s = min( $xexteven / $xcropeven, $yexteven / $ycropeven );
+  s
+  addx = 0.5 * ( $xexteven - $xcropeven * s ) + 0.5
+  addx
+  addy = 0.5 * ( $yexteven - $ycropeven * s ) + 0.5
+  addy
+  $li + addx
+  $un2 + addy
+  $ob + addy
+
+EOQ
+);
+  [[ verbosity -ge 3 ]] && echo "scaleven=$scaleeven addxeven=$addxeven addyeven=$addyeven lieven=$lieven uneven=$uneven obeven=$obeven";
+
+  [[ verbosity -ge 2 ]] && echo
+  [[ verbosity -ge 1 ]] && echo " even pages: re-adding margins <$mg4even >$bs4even"
+  if [[ "$align" = "top" ]]; then
+    pageheightseven="$(pdf_every_height $mg4even)";
+    [[ verbosity -ge 3 ]] && { echo "page heights (+dup last): $pageheightseven"; }
+    $gs -sDEVICE=pdfwrite -dFIXEDMEDIA -dDEVICEWIDTHPOINTS=${xext} -dDEVICEHEIGHTPOINTS=${yext} -dBATCH -dQUIET -dNOPAUSE -sOutputFile=$bs4even -c "<< /Install { $lieven currentpagedevice /PageSize get aload pop exch pop [$pageheightseven] currentpagedevice /PageCount get get $scaleeven mul sub $obeven sub translate $scaleeven $scaleeven scale } bind >> setpagedevice" -f $mg4even
+  else
+    $gs -sDEVICE=pdfwrite -dFIXEDMEDIA -dDEVICEWIDTHPOINTS=${xext} -dDEVICEHEIGHTPOINTS=${yext} -dBATCH -dQUIET -dNOPAUSE -sOutputFile=$bs4even -c "<< /Install { $lieven $uneven translate $scaleeven $scaleeven scale } bind >> setpagedevice" -f $mg4even
+  fi
+  rm -f $mg4even
+  #do_pdfcrop --bbox "0 0 $xexteven $yexteven" --margins "$li $ob $re2 $un2" $sc4even $bs4even; rm -f $sc4even
+  [[ verbosity -ge 3 ]] && pdfinfo $bs4even
+  #okular $bs4even
+}
+
+  if [[ dofork -eq 0 ]]; then
+    oddpages
+    evenpages
+
+  else
+    set +m
+    oddpages & pid4odd=$!
+    evenpages
+    wait $pid4odd
+    set -m
+  fi
+
+  [[ verbosity -ge 3 ]] && echo $'\n---------------------------------------------------------------------------\n'
+
+  if [[ verbosity -ge 3 ]]; then echo $'\n'" pdftk E=$bs4even O=$bs4odd cat $(interleave | tr '\n' ' ') output \"$output\""
+  elif [[ verbosity -ge 2 ]]; then echo $'\n'"combining odd and even pages.";
+  elif [[ verbosity -ge 1 ]]; then echo "combining odd and even pages.";
+  fi
+  [[ verbosity -gt 3 ]] && pdftkverbose=verbose
+  pdftk E=$bs4even O=$bs4odd cat $(interleave) output "$output" $pdftkverbose
 
   rm -f $bs4even $bs4odd
   trap '' EXIT;
-  echo $'\n'
+  if [[ verbostiy -ge 2 ]]; then echo $'\n'; else echo; fi
 fi
