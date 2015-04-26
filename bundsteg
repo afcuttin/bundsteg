@@ -1,8 +1,7 @@
 #!/bin/bash
 #
-#  bundsteg v1.0 - print pdfs with gutter/gap/inner margin
-#  (c) copyright by Elmar Stellnberger 05-08-2009  v1.0
-#
+#  bundsteg v1.1 - print pdfs with gutter/gap/inner margin
+#  (c) copyright by Elmar Stellnberger 2009-08-05: v1.0, 2015-04-13: v1.1
 #
 
 
@@ -17,6 +16,16 @@ calc() {
   done
 }
 
+round() {
+  while [ -n "$1" ]; do
+    var="${1%%=*}"; term="${1#*=}"
+    term="$(sed 's#[A-Za-z][A-Za-z0-9]*#$&#g' <<<"$term")"
+    eval "term=$term"
+    export $var=$(bc <<<"scale=0;$term");
+    shift
+  done
+}
+
 interleave() {
   both=$((pages/2)); rem=$((pages-2*both))
   for((i=1; i<=both; i++)); do
@@ -24,14 +33,14 @@ interleave() {
   [[ rem -gt 0 ]] && echo "O$((both+1))"
 }
 
-dopdfcrop() { {
+do_pdfcrop() { {
   pdfcrop "$@" 2>&1 1>&3 | sed -n "s#.*Error: Cannot move \`\([^']*\)['] to \`\([^']*\)['].*#move\n\1\n\2#p" | {
     read command; if [ "$command" = "move" ]; then
       read movefrom; read moveto; mv "$movefrom" "$moveto";
       echo mv "$movefrom" "$moveto";
     else echo "$command" >&2; fi
   }
-} 3>&1; }
+} 3>&2; }
 
 help() {
   cat <<EOQ
@@ -47,7 +56,7 @@ EOQ
 checkfound() {
   [ -f "$1" ] && return 0
   echo "executable required: $1 ${2+-package} $2"; echo
-  exit 1
+  notfound=true;
 }
 
 
@@ -55,45 +64,55 @@ if [ $# -ne 3 -a $# -ne 4 ]; then help; else
   input="$3"
   if [[ $# -eq 4 ]]; then output="$4"; else output="${input%.pdf}.bundsteg.pdf"; fi
 
-#  pdftools="wine /usr/local/advanced_pdf_tools_cmd_v3.0/pdftools.exe"
-#  checkfound ${pdftools#* } http://www.verypdf.com/pdfinfoeditor/
-  checkfound $(which podofocountpages) libpodofo-utils
-  checkfound $(which pdfcrop) texlive
-#  checkfound $(which pdftools) texlive-context
-  checkfound $(which context) texlive-context
+  notfound=false;
+  #pdftools="wine /usr/local/advanced_pdf_tools_cmd_v3.0/pdftools.exe"
+  #checkfound ${pdftools#* } http://www.verypdf.com/pdfinfoeditor/
+  checkfound $(which pdfcrop) texlive-extra-utils
+  #checkfound $(which pdftools) texlive-context
   checkfound $(which pdftk) pdftk
+  $notfound && exit 1
 
   [[ $2 -gt 0 ]] || { echo "no valid value for bs (use 10 or 15 at 2nd param)";echo; exit 2; }
   bs1=${2%%,*}; bs2=${2#*,}; calc 'bs1=bs1*72/25.4' 'bs2=bs2*72/25.4'
   #calc 'li=0.333*72' 're=li' 'ob=0.5*72' 'un=ob'
   calc 'li=4.3*72/25.4' 're=li' 'ob=li' 'un=ob'
+  round 'breite=210*72*72/25.4' 'laenge=297*72*72/25.4'
   #calc 'li=0' 're=li' 'ob=0' 'un=ob'
 
   if [ "$1" == "--horiz" ]; then
     calc 'li1=li' 'ob1=ob+bs1'   're2=re' 'un2=un+bs2'
+    xext=$laenge; yext=$breite; # papersize="0 0 ${laenge%.*} ${breite%.*}"
   elif [ "$1" == "--vert" ]; then
     calc 'li1=li+bs1' 'ob1=ob'   're2=re+bs2' 'un2=un'
+    xext=$breite; yext=$laenge; # papersize="0 0 ${breite%.*} ${laenge%.*}"
   else
     echo "1st param: --horiz / --vert"; exit 3;
   fi
 
   #pages=$(pdftools --countpages "$input")
-# pages=$(pdftools --info "$input" | sed -n 's#.*<pages>\([0-9]*\)</pages>*#\1#p')
-  pages=$(podofocountpages -s "$input")
-  pdftk P="$input" cat $(seq 1 2 $pages | pize;) output /tmp/odd.pdf
-  pdftk P="$input" cat $(seq 2 2 $pages | pize;) output /tmp/even.pdf
+  #pages=$(pdftools --info "$input" | sed -n 's#.*<pages>\([0-9]*\)</pages>*#\1#p')
+  pages=$(pdftk "$input" dump_data | sed -n 's#^NumberOfPages:[ \t]*\([0-9]*\)#\1#p')
+  unset pdf4even pdf4odd bs4even bs4odd
+  trap 'rm -f $pdf4even $pdf4odd $mg4even $mg4odd $bs4even $bs4odd' EXIT;
 
-  echo $'\n' pdfcrop --margins \"$li1 $ob1 $re $un\" /tmp/odd.pdf /tmp/odd-bs.pdf
-  dopdfcrop --margins "$li1 $ob1 $re $un" /tmp/odd.pdf /tmp/odd-bs.pdf
+  pdf4even=$(mktemp --suffix _even.pdf); pdf4odd=$(mktemp --suffix _odd.pdf)
+  pdftk P="$input" cat $(seq 1 2 $pages | pize;) output $pdf4odd
+  pdftk P="$input" cat $(seq 2 2 $pages | pize;) output $pdf4even
 
-  echo $'\n' pdfcrop --margins \"$li $ob $re2 $un2\" /tmp/even.pdf /tmp/even-bs.pdf
-  dopdfcrop --margins "$li $ob $re2 $un2"  /tmp/even.pdf /tmp/even-bs.pdf
+  mg4even=$(mktemp --suffix _even-mg.pdf); mg4odd=$(mktemp --suffix _odd-mg.pdf)
+  bs4even=$(mktemp --suffix _even-bs.pdf); bs4odd=$(mktemp --suffix _odd-bs.pdf)
+  echo $'\n' pdfcrop --margins \"$li1 $ob1 $re $un\" $pdf4odd $bs4odd
+  do_pdfcrop --margins "$li1 $ob1 $re $un" $pdf4odd $mg4odd; rm -f $pdf4odd
+  gs -sDEVICE=pdfwrite -dPDFFitPage -g${xext}x${yext} -dBATCH -dQUIET -dNOPAUSE -sOutputFile=$bs4odd $mg4odd
 
-  echo $'\n' pdftk E=/tmp/even-bs.pdf O=/tmp/odd-bs.pdf cat $(interleave) output "$output"
-  pdftk E=/tmp/even-bs.pdf O=/tmp/odd-bs.pdf cat $(interleave) output "$output"
+  echo $'\n' pdfcrop --margins \"$li $ob $re2 $un2\" $pdf4even $bs4even
+  do_pdfcrop --margins "$li $ob $re2 $un2"  $pdf4even $mg4even; rm -f $pdf4even
+  gs -sDEVICE=pdfwrite -dPDFFitPage -g${xext}x${yext} -dBATCH -dQUIET -dNOPAUSE -sOutputFile=$bs4even $mg4even
 
-  #rm -f /tmp/even.pdf /tmp/odd.pdf /tmp/even-bs.pdf /tmp/odd-bs.pdf
+  echo $'\n' pdftk E=$bs4even O=$bs4odd cat $(interleave) output "$output"
+  pdftk E=$bs4even O=$bs4odd cat $(interleave) output "$output"
+
+  rm -f $bs4even $bs4odd
+  trap '' EXIT;
   echo $'\n'
 fi
-
-
