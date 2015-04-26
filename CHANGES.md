@@ -1,3 +1,6 @@
+## Version 1.1.0:
+ - Version 1.1 released
+
 ## Version 1.0.1:
  - Fixes to avoid usage of pdftools
  - Improved with License section
