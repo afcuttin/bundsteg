@@ -55,10 +55,12 @@ if [ $# -ne 3 -a $# -ne 4 ]; then help; else
   input="$3"
   if [[ $# -eq 4 ]]; then output="$4"; else output="${input%.pdf}.bundsteg.pdf"; fi
 
-  pdftools="wine /usr/local/advanced_pdf_tools_cmd_v3.0/pdftools.exe"
-  checkfound ${pdftools#* } http://www.verypdf.com/pdfinfoeditor/
+#  pdftools="wine /usr/local/advanced_pdf_tools_cmd_v3.0/pdftools.exe"
+#  checkfound ${pdftools#* } http://www.verypdf.com/pdfinfoeditor/
+  checkfound $(which podofocountpages) libpodofo-utils
   checkfound $(which pdfcrop) texlive
-  checkfound $(which pdftools) texlive-context
+#  checkfound $(which pdftools) texlive-context
+  checkfound $(which context) texlive-context
   checkfound $(which pdftk) pdftk
 
   [[ $2 -gt 0 ]] || { echo "no valid value for bs (use 10 or 15 at 2nd param)";echo; exit 2; }
@@ -76,7 +78,8 @@ if [ $# -ne 3 -a $# -ne 4 ]; then help; else
   fi
 
   #pages=$(pdftools --countpages "$input")
-  pages=$(pdftools --info "$input" | sed -n 's#.*<pages>\([0-9]*\)</pages>*#\1#p')
+# pages=$(pdftools --info "$input" | sed -n 's#.*<pages>\([0-9]*\)</pages>*#\1#p')
+  pages=$(podofocountpages -s "$input")
   pdftk P="$input" cat $(seq 1 2 $pages | pize;) output /tmp/odd.pdf
   pdftk P="$input" cat $(seq 2 2 $pages | pize;) output /tmp/even.pdf
 
@@ -92,3 +95,5 @@ if [ $# -ne 3 -a $# -ne 4 ]; then help; else
   #rm -f /tmp/even.pdf /tmp/odd.pdf /tmp/even-bs.pdf /tmp/odd-bs.pdf
   echo $'\n'
 fi
+
+
