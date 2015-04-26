@@ -32,4 +32,4 @@ See http://www.elstel.org/bundsteg/index.html.en
 
 # License
 
-Released under [Scripting Free Software License (S-FSL) 1.6](../LICENSE.md)
+Released under [Scripting Free Software License (S-FSL) 1.6](../master/LICENSE.md)
