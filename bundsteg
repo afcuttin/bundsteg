@@ -1,7 +1,24 @@
 #!/bin/bash
 #
-#  bundsteg v1.2 - print pdfs with gutter/gap/inner margin
-#  (c) copyright by Elmar Stellnberger 2009-08-05: v1.0, 2015-04-13..19: v1.2
+# bundsteg v1.2 - print pdfs with gutter/gap/inner margin
+# (c) copyright by Elmar Stellnberger, the original author: May 2009, April 2015
+#
+#  further information: www.elstel.org/com; look here for an actual contact address
+#  current email: estellnb@elstel.org; additional email estellnb@gmail.com
+#
+# v.1.2: important bugfix, new features, license (19.04.2015)
+#  * important bugfix: the margin now becomes exactly as large as specified, formerly the page was scaled after adding margins which makes things buggy
+#    now previous margins get fully cropped, all even and odd pages are scaled to the maximum while adding printer margins for both sets of pages
+#  * pdfnup is integrated: no separate invocation of pdfnup is necessary any more to add margins + get multiple slides onto one
+#  * page rotation possible: before any other step pages from the source document may be rotated (ranges,modulo,individually) if necessary
+#
+# v.1.1: OSS based version (14.04.2015)
+#  * now the program relies on OSS-tools only
+#    the changes were inspired by a comment from Alessandro Cuttin
+#    who has sent me a version using podofocountpages rather than pdftools
+#
+# v.1.0: intial version (05.08.2009)
+#  * adds margins to pdf-files
 #
 
 license() {
@@ -198,7 +215,8 @@ $(basename $0) [opts] --vert bs[,bs2] input.pdf [output.pdf]
   --[no-]nup-crop ... crop margins before nup; default is currently off because of an
                       incompatibilty between pdfnup and pdfcrop.
 
-see also: $(basename $0) --license / --help
+see also: $(basename $0) --license / --help,
+          you may visit http[s]://www.elstel.org/bundsteg to look for a demo, docs or a new upstream version
 
 EOQ
   # for compatibility from older versions: --slurp 7 .... consider first seven pages for margin calculation (default: only three)
@@ -466,3 +484,4 @@ EOQ
   trap '' EXIT;
   if [[ verbostiy -ge 2 ]]; then echo $'\n'; else echo; fi
 fi
+
